@@ -1,0 +1,830 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<h1 class="center-heading">AutoML</h1>
+
+<!-- Tabs -->
+<div id="tabs">
+    <span class="tab-text active-tab" data-tab="overview">Overview</span>
+    <span class="tab-text" data-tab="data-preview">Data Preview</span>
+    <span class="tab-text" data-tab="Visualizations">Visualizations</span>
+    <span class="tab-text" data-tab="model-training">Model Training</span>
+    <span class="tab-text" data-tab="testing">Testing</span>
+</div>
+<div class="heading-tabsep"></div>
+
+<!-- OVERVIEW CONTENT -->
+<div id="overview" class="tab-content" style="display:block;">
+    <!-- Intro -->
+    <p class="intro-text-short">Turn Your Dataset Into Insights🔥</p>
+    <p class="intro-text">
+        Build ML models in minutes — upload, explore, and train effortlessly.
+    </p>
+
+    <!-- Steps -->
+    <h2 class="get-started">Getting Started</h2>
+    <div class="tab-separator"></div>
+    <p class="step">📂 Upload your CSV file.</p>
+    <p class="step">👀 Preview your data</p>
+    <p class="step">📊 Generate Visualizations</p>
+    <p class="step">⚙️ Select algorithms and tune parameters</p>
+    <p class="step">🧪 Testing</p>
+    <p class="step">💡 Get insights</p>
+
+    <!-- File Requirements -->
+    <div class="requirements-dropdown">
+        <button class="dropdown-btn">📋 File Requirements</button>
+        <div class="dropdown-content">
+            <div class="file-requirements-box">
+                <ul>
+                    <li>File format: <b>CSV</b></li>
+                    <li>Maximum file size: <b>100MB</b></li>
+                    <li>Supported Columns:
+                        <ul>
+                            <li><b>Numerical</b> → (12,3.5,11)</li>
+                            <li><b>Categorical</b> → (cat, dog, true/false)</li>
+                            <li><b>Temporal</b> → (2024-08-28)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example Datasets -->
+    <div class="requirements-dropdown">
+        <button class="dropdown-btn">📊 Example Datasets</button>
+        <div class="dropdown-content">
+            <div class="file-requirements-box">
+                <ul>
+                    <p>Try these example datasets:</p>
+                    <li><a class="dataset-link" href="https://archive.ics.uci.edu/dataset/53/iris" download>Iris Dataset</a></li>
+                    <li><a class="dataset-link" href="https://archive.ics.uci.edu/dataset/45/heart+disease" download>Heart Disease Dataset</a></li>
+                    <li><a class="dataset-link" href="https://archive.ics.uci.edu/dataset/27/credit+approval" download>Credit Card Dataset</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Upload Form -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2 class="upload-heading">📤 Upload Your Dataset</h2>
+        <div class="tab-separator"></div>
+
+        <label class="cleaning-option">
+            <input type="checkbox" name="skip_cleaning">
+            My dataset is already cleaned (skip cleaning)
+        </label>
+
+        <div id="drop-area">
+            <input type="file" name="csv_file" id="fileElem" accept=".csv" required hidden>
+            <label for="fileElem" class="drop-label">
+                <span class="drop-text">Drag & Drop your CSV file here</span>
+                <span class="browse-button">Browse</span>
+            </label>
+            <p class="file-limit">Limit: up to 100MB per file</p>
+        </div>
+
+        <button type="submit" class="submit-btn"> Upload</button>
+
+        {% if uploaded_file_name %}
+            <p class="uploaded-file-name"><b>Uploaded File:</b> {{ uploaded_file_name }}</p>
+        {% endif %}
+    </form>
+</div>
+
+<!-- DATA PREVIEW CONTENT -->
+<div id="data-preview" class="tab-content" style="display:none;">
+    {% if message %}
+        <h3 class="preview-heading">Great! Your data is ready to explore 🚀</h3>
+
+        <h4 class="shape">🎯 Shape of Data:</h4>
+        <div class="tab-separator"></div>
+        <ul class="shape">
+            <li><span class="label">Total number of rows:</span> <span class="value">{{ num_rows }}</span></li>
+            <li><span class="label">Total number of columns:</span> <span class="value">{{ num_cols }}</span></li>
+        </ul>
+
+        <!-- Column Detection -->
+        <h5 class="col-detect-heading">🔍 Columns Detected:</h5>
+        <div class="tab-separator"></div>
+
+        <div class="column-section">
+            <div class="column-header">
+                <span class="column-label">Categorical Columns:</span> There are total {{ num_cat }} columns
+            </div>
+            {% if cat_cols %}
+            <div class="column-names">
+                {% for col in cat_cols %}
+                    {{ col }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="column-section">
+            <div class="column-header">
+                <span class="column-label">Numerical Columns:</span> There are total {{ num_num }} columns
+            </div>
+            {% if num_cols_list %}
+            <div class="column-names">
+                {% for col in num_cols_list %}
+                    {{ col }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% if num_date > 0 %}
+        <div class="column-section">
+            <div class="column-header">
+                <span class="column-label">Datetime Columns:</span> There are total {{ num_date }} columns
+            </div>
+            <div class="column-names">
+                {% for col in date_cols %}
+                    {{ col }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if sum_stats %}
+        <h3 class="summary-heading">💹 Summary Stats</h3>
+        <div class="tab-separator"></div>
+        <div class="data-preview-end">
+            <div class="table-wrapper">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Mean</th>
+                            <th>Median</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                            <th>Std</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in sum_stats %}
+                        <tr>
+                            <td>{{ stat.column }}</td>
+                            <td>{{ stat.mean }}</td>
+                            <td>{{ stat.median }}</td>
+                            <td>{{ stat.min }}</td>
+                            <td>{{ stat.max }}</td>
+                            <td>{{ stat.std }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if col_stats %}
+        <h3 class="col-info">📌 Column Information</h3>
+        <div class="tab-separator"></div>
+        <div class="table-wrapper">
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Null Count</th>
+                        <th>Unique Values</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in col_stats %}
+                    <tr>
+                        <td>{{ stat.column }}</td>
+                        <td>{{ stat.nulls }}</td>
+                        <td>{{ stat.unique }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- VISUALIZATIONS CONTENT -->
+<div id="Visualizations" class="tab-content" style="display:none;">
+
+    <!-- Custom dropdown -->
+    <div class="column-selection">
+        <div class="custom-dropdown" id="customDropdown">
+            <div class="selected-values" id="selectedValues">Select columns...</div>
+            <div class="options-container" id="optionsContainer">
+                {% for col in all_cols %}
+                <div class="option" data-value="{{ col }}">{{ col }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Heading below dropdown -->
+        <div class="dropdown-heading">
+            👆 Please select columns to visualize charts
+        </div>
+    </div>
+
+    <!-- Charts for columns -->
+<div id="charts-container">
+    {% for group in chart_groups %}
+        {% if group.col != "Correlation Heatmap" %}
+        <div class="chart-group">
+            <h4>{{ group.col }}</h4>
+            <div class="charts-row">
+                {% for chart_html in group.charts %}
+                <div class="chart-container">
+                    {{ chart_html|safe }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- Correlation Heatmap -->
+<div class="corr-section">
+    <h3>Correlation Matrix</h3>
+    <div class="heatmap-container">
+        {% for group in chart_groups %}
+            {% if group.col == "Correlation Heatmap" %}
+                {% for chart_html in group.charts %}
+                    <div class="heatmap-chart">
+                        {{ chart_html|safe }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+</div>
+<!-- MODEL TRAINING TAB -->
+<div id="model-training" class="tab-content" style="display:none;">
+<div class="column-selection">
+  <label for="targetDropdown">Select Target Column (Y):</label>
+  <div class="custom-dropdown" id="targetDropdown">
+      <div class="selected-values" id="selectedTarget">Select target...</div>
+      <div class="options-container" id="targetOptions">
+          {% for col in columns %}
+              <div class="option" data-value="{{ col }}">{{ col }}</div>
+          {% endfor %}
+      </div>
+  </div>
+</div>
+
+
+
+    <div class="column-selection">
+        <div class="custom-dropdown" id="modelDropdown">
+            <div class="selected-values" id="selectedModels">Select models...</div>
+            <div class="options-container" id="modelOptions">
+                <div class="option" data-value="Linear Regression">Linear Regression</div>
+                <div class="option" data-value="Ridge Regression">Ridge Regression</div>
+                <div class="option" data-value="Lasso Regression">Lasso Regression</div>
+                <div class="option" data-value="Decision Tree Regressor">Decision Tree Regressor</div>
+                <div class="option" data-value="Decision Tree Classifier">Decision Tree Classifier</div>
+                <div class="option" data-value="Random Forest Regressor">Random Forest Regressor</div>
+                <div class="option" data-value="Random Forest Classifier">Random Forest Classifier</div>
+                <div class="option" data-value="XGBoost">XGBoost</div>
+            </div>
+        </div>
+
+        <div class="dropdown-heading">
+            👆 Choose a model to train
+        </div>
+    </div>
+
+    <!-- Hyperparameter section (populates dynamically) -->
+    <div id="hyperparameters" style="margin-left: 30px; margin-top: 20px;"></div>
+
+    <!-- Train button -->
+    <button id="trainModelBtn" class="submit-btn">
+         Train Model
+    </button>
+
+
+
+
+    <!-- Training output -->
+    <div id="modelOutput" style="margin-left:30px; margin-top: 30px;"></div>
+</div>
+
+
+<!-- Testing -->
+<div id="testing" class="tab-content" style="display:none;">
+  <div id="testing-status" class="status-msg">
+    Train a model first, then evaluate
+  </div>
+
+  <!-- Results -->
+  <div id="testing-results" class="result-box"></div>
+
+  <!-- Regression Metrics -->
+<div id="reg-metrics" class="metrics-grid" style="display:none">
+  <div class="metrics-card">
+    <div class="title">MAE</div>
+    <div class="value" id="mae-value">--</div>
+  </div>
+  <div class="metrics-card">
+    <div class="title">MSE</div>
+    <div class="value" id="mse-value">--</div>
+  </div>
+  <div class="metrics-card">
+    <div class="title">R2 Score</div>
+    <div class="value" id="r2-score">--</div>
+  </div>
+</div>
+
+<!-- Classification Metrics -->
+<div id="class-metrics" style="display:none">
+  <div class="metrics-card">
+    <div class="title">Accuracy</div>
+    <div class="value" id="accuracy-score">--</div>
+  </div>
+
+  <!-- Classification report section -->
+  <div class="class-report-section" style="flex-basis: 100%; margin-top: 20px;">
+    <h4 class="class-report">Classification Report</h4>
+    {% comment %} <div class="tab-separator"></div> {% endcomment %}
+    <div class="table-wrapper">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1 Score</th>
+            <th>Support</th>
+          </tr>
+        </thead>
+        <tbody id="class-report-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // ================= TAB SWITCHING =================
+  const tabButtons = document.querySelectorAll(".tab-text");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", function () {
+      tabContents.forEach(tc => (tc.style.display = "none"));
+      tabButtons.forEach(tb => tb.classList.remove("active-tab"));
+
+      const tabName = btn.getAttribute("data-tab");
+      const content = document.getElementById(tabName);
+
+      if (content) {
+        content.style.display = "block";
+        btn.classList.add("active-tab");
+      }
+    });
+  });
+
+  // ================= FILE REQUIREMENTS DROPDOWNS =================
+  document.querySelectorAll(".dropdown-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const content = btn.nextElementSibling;
+      content.style.display = content.style.display === "block" ? "none" : "block";
+    });
+  });
+
+  document.addEventListener("click", function (e) {
+    document.querySelectorAll(".dropdown-content").forEach(content => {
+      if (!content.previousElementSibling.contains(e.target) && !content.contains(e.target)) {
+        content.style.display = "none";
+      }
+    });
+  });
+
+  // ================= VISUALIZATION DROPDOWN =================
+  const dropdown = document.getElementById("customDropdown");
+  const selectedValues = document.getElementById("selectedValues");
+  const optionsContainer = document.getElementById("optionsContainer");
+  const chartGroups = document.querySelectorAll(".chart-group");
+  const heading = document.querySelector(".dropdown-heading");
+
+  if (dropdown) {
+    let selectedCols = [];
+
+    dropdown.addEventListener("click", function (e) {
+      if (!e.target.classList.contains("remove-col")) {
+        optionsContainer.style.display =
+          optionsContainer.style.display === "block" ? "none" : "block";
+      }
+    });
+
+    function renderSelected() {
+      if (selectedCols.length === 0) {
+        selectedValues.textContent = "Select columns...";
+        if (heading) heading.style.display = "block";
+
+        chartGroups.forEach(group => {
+          group.style.display =
+            group.querySelector("h4").innerText === "Correlation Heatmap"
+              ? "flex"
+              : "none";
+        });
+        return;
+      }
+
+      selectedValues.innerHTML = "";
+      selectedCols.forEach(col => {
+        const chip = document.createElement("span");
+        chip.classList.add("chip");
+        chip.textContent = col;
+
+        const removeBtn = document.createElement("span");
+        removeBtn.textContent = " ×";
+        removeBtn.classList.add("remove-col");
+
+        removeBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          selectedCols = selectedCols.filter(c => c !== col);
+          optionsContainer.querySelectorAll(".option").forEach(opt => {
+            if (opt.getAttribute("data-value") === col) opt.classList.remove("selected");
+          });
+          renderSelected();
+        });
+
+        chip.appendChild(removeBtn);
+        selectedValues.appendChild(chip);
+      });
+
+      if (heading) heading.style.display = "none";
+
+      chartGroups.forEach(group => {
+        const colName = group.querySelector("h4").innerText;
+        group.style.display = selectedCols.includes(colName)
+          ? "flex"
+          : colName === "Correlation Heatmap"
+          ? "flex"
+          : "none";
+      });
+    }
+
+    optionsContainer.querySelectorAll(".option").forEach(option => {
+      option.addEventListener("click", function () {
+        const val = option.getAttribute("data-value");
+        if (!selectedCols.includes(val)) {
+          selectedCols.push(val);
+          option.classList.add("selected");
+        }
+        renderSelected();
+      });
+    });
+
+    chartGroups.forEach(group => {
+      group.style.display =
+        group.querySelector("h4").innerText === "Correlation Heatmap"
+          ? "flex"
+          : "none";
+    });
+  }
+
+  // ================= TARGET COLUMN DROPDOWN (single-select) =================
+  const targetDropdown = document.getElementById("targetDropdown");
+  const targetSelected = document.getElementById("selectedTarget");
+  const targetOptions = document.getElementById("targetOptions");
+  let selectedTargetCol = null;
+
+  if (targetDropdown) {
+    targetDropdown.addEventListener("click", function (e) {
+      if (!e.target.classList.contains("remove-col")) {
+        targetOptions.style.display =
+          targetOptions.style.display === "block" ? "none" : "block";
+      }
+    });
+
+    targetOptions.querySelectorAll(".option").forEach(option => {
+      option.addEventListener("click", function () {
+        const colName = this.dataset.value;
+        selectedTargetCol = colName;
+
+        targetSelected.innerHTML = `
+          <span class="chip">
+            ${colName} <span class="remove-col">&times;</span>
+          </span>
+        `;
+
+        targetOptions.style.display = "none";
+
+        targetSelected.querySelector(".remove-col").addEventListener("click", e => {
+          e.stopPropagation();
+          selectedTargetCol = null;
+          targetSelected.textContent = "Select target...";
+        });
+      });
+    });
+  }
+
+  // ================= MODEL DROPDOWN (single-select) =================
+  const modelDropdown = document.getElementById("modelDropdown");
+  const selectedModelsDiv = document.getElementById("selectedModels");
+  const modelOptions = document.getElementById("modelOptions");
+  const hyperparamsDiv = document.getElementById("hyperparameters");
+  const trainBtn = document.getElementById("trainModelBtn");
+  const modelOutput = document.getElementById("modelOutput");
+
+  const modelMapping = {
+    "Linear Regression": "linear",
+    "Ridge Regression": "ridge",
+    "Lasso Regression": "lasso",
+    "Decision Tree Regressor": "dtr",
+    "Decision Tree Classifier": "dtc",
+    "Random Forest Regressor": "rfr",
+    "Random Forest Classifier": "rfc",
+    "XGBoost": "xgb",
+  };
+
+  if (modelDropdown && trainBtn) {
+    let selectedModelFriendly = null;
+    let selectedModelBackend = null;
+
+    modelDropdown.addEventListener("click", function (e) {
+      if (e.target.classList.contains("option")) return;
+      if (!e.target.classList.contains("remove-model")) {
+        modelOptions.style.display =
+          modelOptions.style.display === "block" ? "none" : "block";
+      }
+    });
+
+    function renderSelectedModel() {
+      selectedModelsDiv.innerHTML = "";
+
+      if (selectedModelFriendly) {
+        const chip = document.createElement("span");
+        chip.classList.add("chip");
+        chip.textContent = selectedModelFriendly;
+
+        const removeBtn = document.createElement("span");
+        removeBtn.textContent = " ×";
+        removeBtn.classList.add("remove-model");
+
+        removeBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          selectedModelFriendly = null;
+          selectedModelBackend = null;
+          modelOptions
+            .querySelectorAll(".option")
+            .forEach(opt => opt.classList.remove("selected"));
+          renderSelectedModel();
+        });
+
+        chip.appendChild(removeBtn);
+        selectedModelsDiv.appendChild(chip);
+        renderHyperparameters(selectedModelFriendly);
+      } else {
+        selectedModelsDiv.textContent = "Select model...";
+        hyperparamsDiv.innerHTML = "<p>No model selected.</p>";
+      }
+    }
+
+    modelOptions.querySelectorAll(".option").forEach(option => {
+      option.addEventListener("click", function (e) {
+        selectedModelFriendly = option.getAttribute("data-value");
+        selectedModelBackend = modelMapping[selectedModelFriendly];
+
+        modelOptions
+          .querySelectorAll(".option")
+          .forEach(opt => opt.classList.remove("selected"));
+
+        option.classList.add("selected");
+        renderSelectedModel();
+        modelOptions.style.display = "none";
+      });
+    });
+
+    function renderHyperparameters(modelFriendly) {
+      let html = `<h4 class="param-heading">Hyperparameter Tuning</h4>`;
+
+      switch (modelFriendly) {
+        case "Linear Regression":
+          html += `<p style="margin-left:15px;">No hyperparameters available.</p>`;
+          break;
+        case "Ridge Regression":
+        case "Lasso Regression":
+          html += `
+            <div class="param-block"><label>Alpha:</label><input type="number" id="param_alpha" value="1.0" step="0.1"></div>
+            <div class="param-block"><label>Max Iterations:</label><input type="number" id="param_max_iter" value="1000" step="10"></div>`;
+          break;
+        case "Decision Tree Regressor":
+          html += `
+            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
+            <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>
+            <div class="param-block"><label>Criterion:</label><select id="param_criterion"><option value="squared_error">squared_error</option><option value="friedman_mse">friedman_mse</option></select></div>`;
+          break;
+        case "Decision Tree Classifier":
+          html += `
+            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
+            <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>
+            <div class="param-block"><label>Criterion:</label><select id="param_criterion"><option value="gini">gini</option><option value="entropy">entropy</option></select></div>`;
+          break;
+        case "Random Forest Regressor":
+        case "Random Forest Classifier":
+          html += `
+            <div class="param-block"><label>Number of Trees:</label><input type="number" id="param_n_estimators" value="100" step="10"></div>
+            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
+            <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>`;
+          break;
+        case "XGBoost":
+          html += `
+            <div class="param-block"><label>Learning Rate:</label><input type="number" id="param_lr" value="0.1" step="0.01"></div>
+            <div class="param-block"><label>Number of Trees:</label><input type="number" id="param_n_estimators" value="100" step="10"></div>
+            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="3" step="1"></div>`;
+          break;
+      }
+
+      hyperparamsDiv.innerHTML = html;
+    }
+
+    renderSelectedModel();
+
+    // ================= TRAIN BUTTON =================
+    trainBtn.addEventListener("click", function () {
+      if (!selectedModelBackend) { 
+        alert("Please select a model first!"); 
+        return; 
+      }
+      const targetCol = selectedTargetCol;
+      if (!targetCol) { 
+        alert("Please select a target column!"); 
+        return; 
+      }
+
+      const params = {};
+      hyperparamsDiv.querySelectorAll("input, select").forEach(el => {
+        let val;
+
+        if (el.tagName.toLowerCase() === "select") {
+          val = el.value || "gini";  
+        } else {
+          if (el.value !== "") {
+            if (["param_max_depth", "param_min_samples_split", "param_n_estimators"].includes(el.id)) {
+              val = parseInt(el.value);
+            } else if (el.step && el.step.includes(".")) {
+              val = parseFloat(el.value);
+            } else {
+              val = parseInt(el.value);
+            }
+          } else {
+            if (el.id === "param_max_depth") val = 5;
+            else if (el.id === "param_min_samples_split") val = 2;
+            else val = null;
+          }
+        }
+        params[el.id] = val;
+      });
+
+      // REPLACE THIS BLOCK
+// ✅ Mapping for tree-based models (DTC, RFC, RFR)
+      if (["dtc", "rfc", "rfr"].includes(selectedModelBackend)) {
+          const treeParamMapping = {
+              "param_max_depth": "max_depth",
+              "param_min_samples_split": "min_samples_split",
+              "param_criterion": "criterion",
+              "param_n_estimators": "n_estimators"
+          };
+          const mappedParams = {};
+          for (const key in params) {
+              if (treeParamMapping[key] !== undefined && params[key] !== undefined) {
+                  mappedParams[treeParamMapping[key]] = params[key];
+              }
+          }
+          Object.assign(params, mappedParams);
+      }
+
+
+      const filePath = "{{ file_path|escapejs }}";
+      const testingStatus = document.getElementById("testing-status");
+      const maeCard = document.getElementById("mae-value");
+      const mseCard = document.getElementById("mse-value");
+      const r2Card = document.getElementById("r2-score");
+      const accuracyCard = document.getElementById("accuracy-score");
+      const classReportBody = document.getElementById("class-report-body");
+      const regMetrics = document.getElementById("reg-metrics");
+      const classMetrics = document.getElementById("class-metrics");
+
+      function displayEvaluationResults(data) {
+    // Reset cards + table
+    maeCard.textContent = "--";
+    mseCard.textContent = "--";
+    r2Card.textContent = "--";
+    accuracyCard.textContent = "--";
+    classReportBody.innerHTML = "";
+    regMetrics.style.display = "none";
+    classMetrics.style.display = "none";
+
+    if (data.results) {
+        // Regression metrics
+        if (data.results.mae !== undefined) {
+            maeCard.textContent = data.results.mae.toFixed(2);
+            mseCard.textContent = data.results.mse.toFixed(2);
+            r2Card.textContent = data.results.r2.toFixed(2);
+            regMetrics.style.display = "flex";
+            testingStatus.classList.add("status-msg");
+            testingStatus.textContent = "Regression Evaluation Completed!";
+        } 
+        // Classification metrics
+        else if (data.results.accuracy !== undefined) {
+            accuracyCard.textContent = (data.results.accuracy * 100).toFixed(2) + "%";
+
+            const report = data.results.report || {};
+            classReportBody.innerHTML = "";
+
+            for (const key in report) {
+                const row = report[key];
+                if (!row || typeof row.precision !== "number") continue;
+
+                const precision = row.precision;
+                const recall = row.recall;
+                const f1 = row["f1-score"] !== undefined ? row["f1-score"] : (row.f1_score !== undefined ? row.f1_score : null);
+                const support = row.support !== undefined ? row.support : "";
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${key}</td>
+                    <td>${precision.toFixed(2)}</td>
+                    <td>${recall.toFixed(2)}</td>
+                    <td>${f1 !== null ? f1.toFixed(2) : "-"}</td>
+                    <td>${support}</td>
+                `;
+                classReportBody.appendChild(tr);
+            }
+
+            classMetrics.style.display = "flex";
+            testingStatus.classList.add("status-msg");
+            testingStatus.textContent = "Classification Evaluation Completed!";
+        } 
+
+        
+    }
+
+    // ✅ Separate block for messages
+    if (data.message) {
+        testingStatus.textContent = data.message;
+    }
+}
+
+
+
+          // 🔹 Fetch training request
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+        body: JSON.stringify({
+          action: "train",
+          target: targetCol,
+          model: selectedModelBackend,
+          file_path: filePath,
+          hyperparams: params
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        modelOutput.innerHTML = `<p style="color:#ffd700;">${data.message}</p>`;
+        if (data.results) {
+          displayEvaluationResults(data);
+
+          
+        } else {
+          fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+            body: JSON.stringify({
+              action: "evaluate",
+              file_path: filePath,
+              model: selectedModelBackend,
+              target_col: targetCol
+            }),
+          })
+          .then(res => res.json())
+          .then(evalData => displayEvaluationResults(evalData))
+          .catch(err => { console.error(err); testingStatus.textContent = "Error during evaluation!"; });
+        }
+      })
+      .catch(err => { console.error(err); modelOutput.innerHTML = `<p style="color:red;">Error training model.</p>`; });
+    });
+  }
+});
+
+
+
+</script>
+{% endblock %}
