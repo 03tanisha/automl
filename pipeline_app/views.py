@@ -371,3 +371,33 @@ def home(request):
         "columns": all_cols,
         "trained_models": trained_models
     })
+
+
+@csrf_exempt
+def predict(request):
+    import json
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            last_model = request.session.get("last_trained_model")
+            if not last_model:
+                return JsonResponse({"error": "No trained model found"}, status=400)
+
+            # Load trained model
+            model_file = last_model["model_file"]
+            with open(model_file, "rb") as f:
+                trained_model = pickle.load(f)
+
+            # Expecting features as a list in JSON
+            features = data.get("features")
+            if not features:
+                return JsonResponse({"error": "No features provided"}, status=400)
+
+            # Convert to numpy array and predict
+            input_array = np.array([features])
+            prediction = trained_model.predict(input_array)
+
+            return JsonResponse({"prediction": prediction.tolist()})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "POST request required"}, status=400)
