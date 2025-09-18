@@ -331,9 +331,15 @@ body {
 
 
 .uploaded-file-name {
-    margin-top: 10px;
-    color: #00bfff;
-    font-weight: bold;
+    font-size: 10px;
+    /* font-weight: bold; */
+    color: #ccc;
+    font-family: Verdana, Geneva, sans-serif;
+    /* margin-top: 40px; */
+    /* margin-bottom: 10px; */
+    /* text-align: left; */
+    margin-left: 20px;
+
 }
 /*preview-heading*/
 .preview-heading {

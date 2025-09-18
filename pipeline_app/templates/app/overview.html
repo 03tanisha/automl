@@ -3,6 +3,7 @@
 {% block content %}
 <h1 class="center-heading">AutoML</h1>
 
+
 <!-- Tabs -->
 <div id="tabs">
     <span class="tab-text active-tab" data-tab="overview">Overview</span>
@@ -783,48 +784,66 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 
+// ================= TRAINING BUTTON =================
+trainModelBtn.addEventListener("click", function () {
+  const targetCol = targetColumnSelect.value;
+  const filePath = "{{ file_path|escapejs }}";
+  const params = {}; // collect hyperparams if needed
 
-          // 🔹 Fetch training request
-      fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
-        body: JSON.stringify({
-          action: "train",
-          target: targetCol,
-          model: selectedModelBackend,
-          file_path: filePath,
-          hyperparams: params
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        modelOutput.innerHTML = `<p style="color:#ffd700;">${data.message}</p>`;
-        if (data.results) {
-          displayEvaluationResults(data);
+  modelOutput.innerHTML = "<p style='color:cyan;'>Training model...</p>";
 
-          
-        } else {
-          fetch("/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
-            body: JSON.stringify({
-              action: "evaluate",
-              file_path: filePath,
-              model: selectedModelBackend,
-              target_col: targetCol
-            }),
-          })
-          .then(res => res.json())
-          .then(evalData => displayEvaluationResults(evalData))
-          .catch(err => { console.error(err); testingStatus.textContent = "Error during evaluation!"; });
-        }
-      })
-      .catch(err => { console.error(err); modelOutput.innerHTML = `<p style="color:red;">Error training model.</p>`; });
+  fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+    body: JSON.stringify({
+      action: "train",
+      target: targetCol,
+      model: selectedModelBackend,
+      file_path: filePath,
+      hyperparams: params
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      modelOutput.innerHTML = `<p style="color:#ffd700;">${data.message}</p>`;
+      if (data.results) {
+        // if backend sends results with training itself
+        displayEvaluationResults(data);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      modelOutput.innerHTML = `<p style="color:red;">Error training model.</p>`;
     });
-  }
 });
 
+// ================= TESTING BUTTON =================
+testBtn.addEventListener("click", function () {
+  const filePath = "{{ file_path|escapejs }}";
+  const targetCol = targetColumnSelect.value;
 
+  testingStatus.textContent = "Evaluating model...";
+
+  fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+    body: JSON.stringify({
+      action: "evaluate",   // ⬅️ here we call evaluate directly
+      file_path: filePath,
+      model: selectedModelBackend,
+      target_col: targetCol
+    }),
+  })
+    .then(res => res.json())
+    .then(evalData => {
+      displayEvaluationResults(evalData);
+      testingStatus.textContent = "Evaluation completed ✅";
+    })
+    .catch(err => {
+      console.error(err);
+      testingStatus.textContent = "Error during evaluation!";
+    });
+});
 
 </script>
 {% endblock %}
