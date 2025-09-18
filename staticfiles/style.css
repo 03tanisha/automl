@@ -1,0 +1,848 @@
+
+
+body {
+    background-color: #1e1e1e;  
+    color: white;              
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', 'sans-serif';
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;      
+}
+
+/* Heading */
+.center-heading {
+    text-align: center !important;
+    margin-top: 90px !important;
+    margin-bottom: 40px !important;
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', 'sans-serif' !important;
+    font-size: 80px !important;
+    /* color: #9b59b6!important; */
+    font-weight: bold !important;
+    color: #ffd700;
+    text-shadow:
+  0 0 4px #ffd700,
+  0 0 12px #ffcc00,
+  0 0 20px #ff9900;}
+
+
+.heading-tabsep{
+    border-bottom: 2px solid #444;  /* line color */
+    margin: 0 80px; 
+
+}
+
+
+/* overview tab */
+#tabs {
+    display: flex;
+    gap: 100px; /* space between tabs */
+    margin-bottom: 30px;
+    font-weight: bold;
+    font-family: 'Uni Sans Heavy Regular', cursive;
+    background: none;
+    padding: 0;
+    margin-bottom: 14px;
+    justify-content: start;
+    
+}
+
+.tab-text {
+    color: white; 
+    margin: 20px;
+    cursor: pointer;
+    padding: 15px 20px;
+    border: none; 
+    text-decoration: none;
+    text-align: left;
+    font-size: 26px;
+    background: none;
+    margin: 0;
+}
+
+.tab-text:hover {
+    color: #ffd700;
+    text-shadow:
+  0 0 5px #ffd700,
+  0 0 15px #ffd700,
+  0 0 30px #ffcc00,
+  0 0 50px #ff9900;
+
+    
+}
+
+.active-tab {
+    color: #F4A261;
+    text-shadow: 2px 2px 4px #F4A261;
+}
+.tab-text {
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.tab-separator {
+    border-bottom: 2px solid #444;  /* line color */
+    margin: 0 40px;  /* optional side spacing */
+}
+
+/* intro-heading */
+.intro-heading {
+    font-size: 30px;
+    text-align: center; /* center heading */
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', 'sans-serif';
+    color: #ccc;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+
+.intro-text-short {
+    text-align: left;
+    font-size: 24px;
+    color: #ffd700;
+    font-weight: bold;
+    /* font:cursive; */
+    font-family: cursive;
+    margin-bottom: 10px;
+    margin-left: 18px;
+    margin-bottom: 2px;
+}
+
+/* intro-text */
+.intro-text {
+    text-align: left;                
+    font-size: 16px;
+    color:#F5F5DC;
+    font-family: Verdana, Geneva, sans-serif;
+    margin-top: 0;
+    font-weight: bold;                     
+    padding: 15px 20px;
+    margin-left: 25px;
+}
+
+
+/*get-started*/
+.get-started{
+    font-size: 18px;
+    font-weight: bold;
+    color: #F5F5DC;
+    font-family: Verdana, Geneva, sans-serif;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.tab-separator {
+    border-bottom: 2px solid #444;
+    width: 80%;    
+    margin: 15px 0 25px 40px; 
+}
+
+
+.steps-container {
+  display: flex;
+  flex-wrap: wrap;   
+  gap: 15px;
+  /* margin-bottom: 25px;    */
+  margin-top: 10px;
+}
+
+.step {
+  margin: 1px 0;         
+  font-size: 19px;
+  color: #fff;
+  margin-left: 30px;
+}
+
+/*file format*/
+/* Dropdown button */
+.dropdown-btn {
+    background-color:#1e1e1e ;
+    color: #cca300;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    transition: background 0.3s;
+}
+
+.dropdown-btn:hover {
+    background-color:#444;
+}
+
+/* Dropdown content */
+.dropdown-content {
+    display: none;
+    background-color: #444;
+    padding: 12xpx;
+    font-family: Verdana, Geneva, sans-serif;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.dropdown-content ul {
+    color: #fff;
+    margin-left: 20px;
+    line-height: 1.6;
+    font-size: 16px;
+    font-family: Verdana, Geneva, sans-serif;
+
+}
+
+
+/* File Requirements Box */
+.file-requirements-box {
+    border: 1.2px solid #282828;  
+    border-radius: 8px; 
+    font-size: 12px;        
+    padding: 14px;               
+    margin-top: 0px;            
+    background:	#101010; 
+    color: white;
+}
+
+.file-requirements-box ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+
+.dataset-link {
+    background: none;
+    border: none;
+    color: #ffd700;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: Verdana, Geneva, sans-serif;
+    padding: 5px 0;
+    text-align: left;
+    width: 100%;
+    transition: color 0.3s;
+}
+
+.dataset-link:hover {
+    color: #ffcc00;
+}
+
+
+/* Upload Heading */
+.upload-heading {
+    font-size: 18px;
+    color: #ffd700;
+    font-family: Verdana, Geneva, sans-serif;
+    margin-bottom: 5px;
+    font-weight: bold;
+    margin-left: 20px;
+
+}
+
+
+/* Checkbox option */
+.cleaning-option {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 20px;
+    color:  #F5F5DC;
+    margin-left: 35px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Upload instruction */
+.upload-instruction {
+    font-size: 18px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #F5F5DC;
+    margin-left: 35px;
+}
+
+
+/* Drag & Drop label as flex container */
+.drop-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Text on left */
+.drop-text {
+    font-size: 16px;
+    color: #ccc;
+}
+
+/* Browse button stays on right */
+.browse-button {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #444;
+    color: #ffd700;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+.browse-button:hover {
+    background: #666;
+}
+
+/* File size note */
+.file-limit {
+    margin-top: 1px;
+    font-size: 13px;
+    color: #aaa;
+
+    font-style: italic;
+}
+
+/* Drop area */
+#drop-area {
+    border: 2px dashed #666;
+    border-radius: 10px;
+    width: 60%;
+    margin: 20px auto;
+    /* padding: 20px 25px; */
+    padding: 12px 20px;
+    text-align: left;
+    color: #F5F5DC;
+    cursor: pointer;
+    margin-left: 35px;
+    transition: border-color 0.3s, background 0.3s;
+}
+#drop-area.highlight {
+    border-color: #8a2be2;
+    background: rgba(138, 43, 226, 0.1);
+}
+
+/*showfilename*/
+.file-name-box {
+    background-color: #2a2a2a;
+    color: #ffd700;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+
+.uploaded-file-name {
+    margin-top: 10px;
+    color: #00bfff;
+    font-weight: bold;
+}
+/*preview-heading*/
+.preview-heading {
+    font-size: 20px;
+    font-family: Verdana, Geneva, sans-serif;
+    color: white;
+    display: flex; 
+    justify-content: center;       
+    text-shadow: 0 0 2px white, 0 0 4px white;
+    transition: text-shadow 0.3s ease-in-out;
+}
+
+
+
+/* Shape of Data */
+.shape {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+    margin-left: 14px;
+    line-height: 1.6;
+    /* color: #F5F5DC; */
+    color: #ffd700;
+    /* margin: 0 40px 4px 40px;    */
+    padding-bottom: 1.5px; 
+    margin-bottom: 5px;
+    margin-top: 50px;  
+}
+
+/* Label before colon */
+.shape .label {
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: 6px;
+    padding-bottom: 4px; 
+    font-size: 14px; /* small spacing */
+}
+
+/* Value after colon */
+.shape .value {
+    font-weight: normal;   /* lighter than label */
+    color: #F5F5DC;
+    font-size: 14px;
+}
+
+
+/* Columns Detected Heading */
+.col-detect-heading {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffd700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 15px;
+    margin-top: 50px;
+    padding-bottom: 1.5px;
+    margin-bottom: 5px;
+}
+
+/*
+/* Column Section Styling */
+.column-section {
+    font-family: Verdana, Geneva, sans-serif;
+    color: #F5F5DC;
+    margin-bottom: 20px;  /* spacing between sections */
+    margin-left: 30px;
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+/* Header line (label + total count) */
+.column-header {
+    margin-bottom: 5px;  /* spacing between heading and names */
+}
+
+/* Only the label (Categorical/Numerical/Datetime) is bold and larger */
+.column-label {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* Column names list */
+.column-names {
+    margin-left: 60px;
+    display: block;
+    font-weight: bold;
+    color: #F5F5DC;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 35px;  
+}
+
+
+/*summry-heading*/
+.summary-heading{
+     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+    margin-left: 15px;
+    line-height: 1.6;
+    /* color: #F5F5DC; */
+     color: #ffd700;
+      padding-bottom: 1.5px;
+      margin-bottom: 5px;
+      margin-top: 50px;
+}
+
+/* Scrollable wrapper (box only) */
+.table-wrapper {
+    max-height: 180px;      /* scroll height */
+    overflow-y: auto;       
+    border-radius: 18px;    
+    border: 1px solid #444; 
+    background-color: #1e1e1e; 
+    padding: 5px;           
+    width: 88%; 
+    font-size: 13px;            
+    margin-left: 30px; 
+    margin-top: 17px;     
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Table inside */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+}
+
+/* Header */
+.summary-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #333;
+    color: #e6e6e6;          /* soft white */
+    padding: 8px;
+    text-align: center;
+    border-bottom: 2px solid #444;  /* line under header */
+    border-right: 1px solid #444;   /* vertical divider */
+}
+
+/* Remove right border from last column */
+.summary-table thead th:last-child,
+.summary-table tbody td:last-child {
+    border-right: none;
+}
+
+/* Body cells */
+.summary-table tbody td {
+    padding: 6px 8px;
+    text-align: center;
+    border-bottom: 1px solid #444;  /* horizontal line */
+    border-right: 1px solid #444;   /* vertical line */
+}
+
+/* Alternating rows */
+.summary-table tbody tr:nth-child(even) { background-color: #2a2a2a; }
+.summary-table tbody tr:nth-child(odd)  { background-color: #242424; }
+
+/* Hover only on cell */
+.summary-table td:hover {
+    background-color: #6D6D6D;   /* teal hover */
+    cursor: pointer;
+}
+
+
+/*colinfo-heading*/
+.col-info{
+     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+    margin-left: 15px;
+    line-height: 1.6;
+    /* color: #F5F5DC; */
+     color: #ffd700;
+      padding-bottom: 1.5px;
+      margin-bottom: 5px;
+      margin-top: 50px;
+}
+
+
+.data-preview-end {
+    margin-bottom: 100px; /* extra space at the bottom of the page */
+}
+/* --- Column Selection Dropdown --- */
+.column-selection {
+    margin: 20px 0;
+}
+
+.column-selection label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Custom dark dropdown styling */
+.custom-dropdown {
+    border: none;                 /* no border */
+    border-radius: 6px;
+    padding: 10px 12px;
+    width: 900px;
+    margin-left: 30px;                 /* wider dropdown */
+    position: relative;
+    cursor: pointer;
+    background: #444;             /* dark background */
+    color: #fff;                  /* white text */
+    font-size: 1rem;
+}
+
+
+.selected-values {
+    min-height: 28px;
+    line-height: 28px;
+    color: #fff;
+    font-weight: bold;                  /* white text */
+}
+
+.options-container {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    border: none;                 /* no border */
+    background: #444;             /* dark dropdown */
+    z-index: 10;
+    border-radius: 0 0 6px 6px;
+}
+
+.option {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #fff;                  /* white text */
+}
+
+/* Remove hover effect */
+.option:hover {
+    background: #444;             /* same as background */
+}
+
+/* Show selected option slightly lighter */
+.option.selected {
+    background: #666;
+    color: #fff;
+}
+
+/* --- Selected column chip style --- */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    margin-right: 6px;
+    border-radius: 12px;
+    background: #599e94;   /* ✅ different color for selected column */
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.chip .remove-col {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.chip .remove-col:hover {
+    color: #ff6666;   /* make the X red on hover */
+}
+
+/* Parent container: 2 column groups per row */
+#charts-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 column groups per row */
+  gap: 20px; /* spacing between column groups */
+  margin-top: 20px;
+  row-gap: 30px;
+  margin-left: 10px;
+}
+
+/* Column group: stack charts vertically */
+.chart-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* space between charts inside group */
+}
+
+.chart-group h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+/* Row of charts inside a group */
+.charts-row {
+  display: flex;
+  gap: 10px; /* space between charts in a group */
+}
+
+/* Individual chart */
+.chart-container {
+  flex: 0 0 calc(50% - 10px); /* 2 charts per row in group */
+  height: 260px;
+  box-sizing: border-box;
+}
+
+
+
+
+.dropdown-heading {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ccc;              /* lighter hint text */
+    font-style: italic;
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', 'sans-serif';
+    text-align: left;
+    margin-left: 30px;      
+}
+
+
+/*heatmap heading*/
+.corr-section {
+    text-align: left;
+    margin: 30px 15px 40px 15px;
+    font-size: 16px;
+    margin-top: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #ffd700;
+    margin-bottom: 30px;
+}
+
+
+/* Container for the heatmap */
+.heatmap-container {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* center heatmap */
+    margin-top: 30px;
+}
+
+/* Individual heatmap chart */
+.heatmap-chart {
+    width: 80%;
+    max-width: 900px;
+}
+
+/*hyper-param styling*/
+.param-block {
+    margin-bottom: 20px;        /* space between each param */
+    display: flex;
+    flex-direction: column;     /* stack label above input */
+    gap: 5px;                   /* space between label and input */
+}
+
+.param-block label {
+    font-weight: 500;           /* make labels a bit bolder */
+}
+
+.param-block input,
+.param-block select {
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 900px;  
+                  /* adjust width as needed */
+    background-color: #696969;   /* light gray */
+    color: #FFFFF0;                  /* text color inside input */
+}
+
+
+
+/*hyperparamer-heading*/
+.param-heading{
+    font-size: 20px;
+    color: #ffd700;
+    margin-left: 10px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+
+
+.column-selection label {
+    font-weight: bold;      /* makes the label text bold */
+    font-size: 16px;        /* adjust size if needed */
+    display: inline-block;  /* ensures proper spacing */
+    margin-bottom: 5px;     /* space below the label */
+    color: #ffd700;           
+    margin-left: 18px;
+}
+
+/*button*/
+.submit-btn{
+    background-color: #444;
+    border-radius: 8px;
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+    margin-left: 15px;
+}
+
+.metrics-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;              /* more space between cards */
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;         /* wrap if many cards */
+    padding: 15px;
+    margin-left: 200px;
+    width: calc(100% - 170px); /* full width minus margin */
+}
+
+.metrics-card {
+    flex: 0 0 auto;
+    width: 200px;
+    padding: 25px 20px;
+    background: #1e1e1e;
+    border: 2px solid #555;
+    border-radius: 15px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin-top: 30px;
+}
+
+.metrics-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 15px;
+    padding: 2px;
+    background: linear-gradient(45deg, #ffd700, #ff8c00);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.metrics-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border-color: #ffd700;
+}
+
+.metrics-card .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ccc;
+    margin-bottom: 12px;  /* more space below title */
+}
+
+.metrics-card .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffd700;
+}
+
+
+
+/*status-msg*/
+.status-msg{
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+    margin-left: 15px;
+    line-height: 1.6;
+    /* color: #F5F5DC; */
+     color: #ffd700;
+      padding-bottom: 1.5px;
+      margin-bottom: 5px;
+      margin-top: 50px;
+}
+    
+
+
+
+.class-report {
+    font-size: 18px;
+    /* font-weight: bold; */
+    color: #ffd700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* margin-left: 50px; */
+    margin-top: 20px;
+     text-align: center;
+    /* padding-bottom: 1.5px; */
+    margin-bottom: 5px;
+}
+
+
+.insights-section {
+     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+    margin-left: 15px;
+    line-height: 1.6;
+    /* color: #F5F5DC; */
+     color: #ffd700;
+      padding-bottom: 1.5px;
+      margin-bottom: 5px;
+      margin-top: 50px;
+}

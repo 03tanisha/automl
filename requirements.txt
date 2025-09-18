@@ -6,3 +6,4 @@ chardet
 plotly
 joblib
 gunicorn
+whitenoise
