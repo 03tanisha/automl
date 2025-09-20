@@ -25,12 +25,8 @@ SECRET_KEY = 'django-insecure-d5+8u91+s$y9tj$xb&h5upr5rhx4$(%kr(u8^6@_@7w-c45n+-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'automl-production-0277.up.railway.app',
-]
 
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
