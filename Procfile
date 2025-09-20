@@ -1,1 +1,1 @@
-web: gunicorn automl_pipeline.wsgi
+web: gunicorn main.wsgi
