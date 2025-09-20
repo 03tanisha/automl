@@ -21,6 +21,20 @@ from .corr import corr_chart
 from pathlib import Path
 
 
+# def safe_json(data):
+#     """Recursively convert numpy types to native Python for JSON serialization."""
+#     if isinstance(data, dict):
+#         return {k: safe_json(v) for k, v in data.items()}
+#     elif isinstance(data, list):
+#         return [safe_json(v) for v in data]
+#     elif isinstance(data, (np.int64, np.int32)):
+#         return int(data)
+#     elif isinstance(data, (np.float64, np.float32)):
+#         return float(data)
+#     else:
+#         return data
+
+
 def sanitize_params(params):
     safe = {}
     for key, val in params.items():
@@ -133,6 +147,23 @@ def home(request):
                     message = "CSV Uploaded and Cleaned Successfully!"
                 else:
                     message = "CSV Uploaded Successfully!"
+
+
+                # return JsonResponse(safe_json({
+                #     "message": message,
+                #     "uploaded_file_name": uploaded_file_name,
+                #     "num_rows": num_rows,
+                #     "num_cols": num_cols,
+                #     "cat_cols": cat_cols,
+                #     "num_cols_list": num_cols_list,
+                #     "date_cols": date_cols,
+                #     "num_cat": num_cat,
+                #     "num_num": num_num,
+                #     "num_date": num_date,
+                #     "col_stats": col_stats,
+                #     "sum_stats": sum_stats,
+                #     "file_path": file_path,
+                # }))
 
         elif request.content_type == "application/json":
             try:

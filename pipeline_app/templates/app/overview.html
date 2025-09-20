@@ -379,471 +379,439 @@
 {% block scripts %}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // ================= TAB SWITCHING =================
-  const tabButtons = document.querySelectorAll(".tab-text");
-  const tabContents = document.querySelectorAll(".tab-content");
+    // ================= TAB SWITCHING =================
+    const tabButtons = document.querySelectorAll(".tab-text");
+    const tabContents = document.querySelectorAll(".tab-content");
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", function () {
-      tabContents.forEach(tc => (tc.style.display = "none"));
-      tabButtons.forEach(tb => tb.classList.remove("active-tab"));
+    tabButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            tabContents.forEach(tc => (tc.style.display = "none"));
+            tabButtons.forEach(tb => tb.classList.remove("active-tab"));
 
-      const tabName = btn.getAttribute("data-tab");
-      const content = document.getElementById(tabName);
+            const tabName = btn.getAttribute("data-tab");
+            const content = document.getElementById(tabName);
 
-      if (content) {
-        content.style.display = "block";
-        btn.classList.add("active-tab");
-      }
-    });
-  });
-
-  // ================= FILE REQUIREMENTS DROPDOWNS =================
-  document.querySelectorAll(".dropdown-btn").forEach(btn => {
-    btn.addEventListener("click", function () {
-      const content = btn.nextElementSibling;
-      content.style.display = content.style.display === "block" ? "none" : "block";
-    });
-  });
-
-  document.addEventListener("click", function (e) {
-    document.querySelectorAll(".dropdown-content").forEach(content => {
-      if (!content.previousElementSibling.contains(e.target) && !content.contains(e.target)) {
-        content.style.display = "none";
-      }
-    });
-  });
-
-  // ================= VISUALIZATION DROPDOWN =================
-  const dropdown = document.getElementById("customDropdown");
-  const selectedValues = document.getElementById("selectedValues");
-  const optionsContainer = document.getElementById("optionsContainer");
-  const chartGroups = document.querySelectorAll(".chart-group");
-  const heading = document.querySelector(".dropdown-heading");
-
-  if (dropdown) {
-    let selectedCols = [];
-
-    dropdown.addEventListener("click", function (e) {
-      if (!e.target.classList.contains("remove-col")) {
-        optionsContainer.style.display =
-          optionsContainer.style.display === "block" ? "none" : "block";
-      }
+            if (content) {
+                content.style.display = "block";
+                btn.classList.add("active-tab");
+            }
+        });
     });
 
-    function renderSelected() {
-      if (selectedCols.length === 0) {
-        selectedValues.textContent = "Select columns...";
-        if (heading) heading.style.display = "block";
+    // ================= FILE REQUIREMENTS DROPDOWNS =================
+    document.querySelectorAll(".dropdown-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const content = btn.nextElementSibling;
+            content.style.display = content.style.display === "block" ? "none" : "block";
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        document.querySelectorAll(".dropdown-content").forEach(content => {
+            if (!content.previousElementSibling.contains(e.target) && !content.contains(e.target)) {
+                content.style.display = "none";
+            }
+        });
+    });
+
+    // ================= VISUALIZATION DROPDOWN =================
+    const dropdown = document.getElementById("customDropdown");
+    const selectedValues = document.getElementById("selectedValues");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const chartGroups = document.querySelectorAll(".chart-group");
+    const heading = document.querySelector(".dropdown-heading");
+
+    if (dropdown) {
+        let selectedCols = [];
+
+        dropdown.addEventListener("click", function (e) {
+            if (!e.target.classList.contains("remove-col")) {
+                optionsContainer.style.display =
+                    optionsContainer.style.display === "block" ? "none" : "block";
+            }
+        });
+
+        function renderSelected() {
+            if (selectedCols.length === 0) {
+                selectedValues.textContent = "Select columns...";
+                if (heading) heading.style.display = "block";
+
+                chartGroups.forEach(group => {
+                    group.style.display =
+                        group.querySelector("h4").innerText === "Correlation Heatmap" ? "flex" : "none";
+                });
+                return;
+            }
+
+            selectedValues.innerHTML = "";
+            selectedCols.forEach(col => {
+                const chip = document.createElement("span");
+                chip.classList.add("chip");
+                chip.textContent = col;
+
+                const removeBtn = document.createElement("span");
+                removeBtn.textContent = " ×";
+                removeBtn.classList.add("remove-col");
+
+                removeBtn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    selectedCols = selectedCols.filter(c => c !== col);
+                    optionsContainer.querySelectorAll(".option").forEach(opt => {
+                        if (opt.getAttribute("data-value") === col) opt.classList.remove("selected");
+                    });
+                    renderSelected();
+                });
+
+                chip.appendChild(removeBtn);
+                selectedValues.appendChild(chip);
+            });
+
+            if (heading) heading.style.display = "none";
+
+            chartGroups.forEach(group => {
+                const colName = group.querySelector("h4").innerText;
+                group.style.display = selectedCols.includes(colName)
+                    ? "flex"
+                    : colName === "Correlation Heatmap"
+                    ? "flex"
+                    : "none";
+            });
+        }
+
+        optionsContainer.querySelectorAll(".option").forEach(option => {
+            option.addEventListener("click", function () {
+                const val = option.getAttribute("data-value");
+                if (!selectedCols.includes(val)) {
+                    selectedCols.push(val);
+                    option.classList.add("selected");
+                }
+                renderSelected();
+            });
+        });
 
         chartGroups.forEach(group => {
-          group.style.display =
-            group.querySelector("h4").innerText === "Correlation Heatmap"
-              ? "flex"
-              : "none";
+            group.style.display =
+                group.querySelector("h4").innerText === "Correlation Heatmap" ? "flex" : "none";
         });
-        return;
-      }
-
-      selectedValues.innerHTML = "";
-      selectedCols.forEach(col => {
-        const chip = document.createElement("span");
-        chip.classList.add("chip");
-        chip.textContent = col;
-
-        const removeBtn = document.createElement("span");
-        removeBtn.textContent = " ×";
-        removeBtn.classList.add("remove-col");
-
-        removeBtn.addEventListener("click", function (e) {
-          e.stopPropagation();
-          selectedCols = selectedCols.filter(c => c !== col);
-          optionsContainer.querySelectorAll(".option").forEach(opt => {
-            if (opt.getAttribute("data-value") === col) opt.classList.remove("selected");
-          });
-          renderSelected();
-        });
-
-        chip.appendChild(removeBtn);
-        selectedValues.appendChild(chip);
-      });
-
-      if (heading) heading.style.display = "none";
-
-      chartGroups.forEach(group => {
-        const colName = group.querySelector("h4").innerText;
-        group.style.display = selectedCols.includes(colName)
-          ? "flex"
-          : colName === "Correlation Heatmap"
-          ? "flex"
-          : "none";
-      });
     }
 
-    optionsContainer.querySelectorAll(".option").forEach(option => {
-      option.addEventListener("click", function () {
-        const val = option.getAttribute("data-value");
-        if (!selectedCols.includes(val)) {
-          selectedCols.push(val);
-          option.classList.add("selected");
-        }
-        renderSelected();
-      });
-    });
+    // ================= TARGET COLUMN DROPDOWN (single-select) =================
+    const targetDropdown = document.getElementById("targetDropdown");
+    const targetSelected = document.getElementById("selectedTarget");
+    const targetOptions = document.getElementById("targetOptions");
+    let selectedTargetCol = null;
 
-    chartGroups.forEach(group => {
-      group.style.display =
-        group.querySelector("h4").innerText === "Correlation Heatmap"
-          ? "flex"
-          : "none";
-    });
-  }
-
-  // ================= TARGET COLUMN DROPDOWN (single-select) =================
-  const targetDropdown = document.getElementById("targetDropdown");
-  const targetSelected = document.getElementById("selectedTarget");
-  const targetOptions = document.getElementById("targetOptions");
-  let selectedTargetCol = null;
-
-  if (targetDropdown) {
-    targetDropdown.addEventListener("click", function (e) {
-      if (!e.target.classList.contains("remove-col")) {
-        targetOptions.style.display =
-          targetOptions.style.display === "block" ? "none" : "block";
-      }
-    });
-
-    targetOptions.querySelectorAll(".option").forEach(option => {
-      option.addEventListener("click", function () {
-        const colName = this.dataset.value;
-        selectedTargetCol = colName;
-
-        targetSelected.innerHTML = `
-          <span class="chip">
-            ${colName} <span class="remove-col">&times;</span>
-          </span>
-        `;
-
-        targetOptions.style.display = "none";
-
-        targetSelected.querySelector(".remove-col").addEventListener("click", e => {
-          e.stopPropagation();
-          selectedTargetCol = null;
-          targetSelected.textContent = "Select target...";
-        });
-      });
-    });
-  }
-
-  // ================= MODEL DROPDOWN (single-select) =================
-  const modelDropdown = document.getElementById("modelDropdown");
-  const selectedModelsDiv = document.getElementById("selectedModels");
-  const modelOptions = document.getElementById("modelOptions");
-  const hyperparamsDiv = document.getElementById("hyperparameters");
-  const trainBtn = document.getElementById("trainModelBtn");
-  const modelOutput = document.getElementById("modelOutput");
-
-  const modelMapping = {
-    "Linear Regression": "linear",
-    "Ridge Regression": "ridge",
-    "Lasso Regression": "lasso",
-    "Decision Tree Regressor": "dtr",
-    "Decision Tree Classifier": "dtc",
-    "Random Forest Regressor": "rfr",
-    "Random Forest Classifier": "rfc",
-    "XGBoost": "xgb",
-  };
-
-  if (modelDropdown && trainBtn) {
-    let selectedModelFriendly = null;
-    let selectedModelBackend = null;
-
-    modelDropdown.addEventListener("click", function (e) {
-      if (e.target.classList.contains("option")) return;
-      if (!e.target.classList.contains("remove-model")) {
-        modelOptions.style.display =
-          modelOptions.style.display === "block" ? "none" : "block";
-      }
-    });
-
-    function renderSelectedModel() {
-      selectedModelsDiv.innerHTML = "";
-
-      if (selectedModelFriendly) {
-        const chip = document.createElement("span");
-        chip.classList.add("chip");
-        chip.textContent = selectedModelFriendly;
-
-        const removeBtn = document.createElement("span");
-        removeBtn.textContent = " ×";
-        removeBtn.classList.add("remove-model");
-
-        removeBtn.addEventListener("click", function (e) {
-          e.stopPropagation();
-          selectedModelFriendly = null;
-          selectedModelBackend = null;
-          modelOptions
-            .querySelectorAll(".option")
-            .forEach(opt => opt.classList.remove("selected"));
-          renderSelectedModel();
+    if (targetDropdown) {
+        targetDropdown.addEventListener("click", function (e) {
+            if (!e.target.classList.contains("remove-col")) {
+                targetOptions.style.display =
+                    targetOptions.style.display === "block" ? "none" : "block";
+            }
         });
 
-        chip.appendChild(removeBtn);
-        selectedModelsDiv.appendChild(chip);
-        renderHyperparameters(selectedModelFriendly);
-      } else {
-        selectedModelsDiv.textContent = "Select model...";
-        hyperparamsDiv.innerHTML = "<p>No model selected.</p>";
-      }
+        targetOptions.querySelectorAll(".option").forEach(option => {
+            option.addEventListener("click", function () {
+                const colName = this.dataset.value;
+                selectedTargetCol = colName;
+
+                targetSelected.innerHTML = `<span class="chip">${colName} <span class="remove-col">&times;</span></span>`;
+
+                targetOptions.style.display = "none";
+
+                targetSelected.querySelector(".remove-col").addEventListener("click", e => {
+                    e.stopPropagation();
+                    selectedTargetCol = null;
+                    targetSelected.textContent = "Select target...";
+                });
+            });
+        });
     }
 
-    modelOptions.querySelectorAll(".option").forEach(option => {
-      option.addEventListener("click", function (e) {
-        selectedModelFriendly = option.getAttribute("data-value");
-        selectedModelBackend = modelMapping[selectedModelFriendly];
+    // ================= MODEL DROPDOWN (single-select) =================
+    const modelDropdown = document.getElementById("modelDropdown");
+    const selectedModelsDiv = document.getElementById("selectedModels");
+    const modelOptions = document.getElementById("modelOptions");
+    const hyperparamsDiv = document.getElementById("hyperparameters");
+    const trainBtn = document.getElementById("trainModelBtn");
+    const modelOutput = document.getElementById("modelOutput");
 
-        modelOptions
-          .querySelectorAll(".option")
-          .forEach(opt => opt.classList.remove("selected"));
+    const modelMapping = {
+        "Linear Regression": "linear",
+        "Ridge Regression": "ridge",
+        "Lasso Regression": "lasso",
+        "Decision Tree Regressor": "dtr",
+        "Decision Tree Classifier": "dtc",
+        "Random Forest Regressor": "rfr",
+        "Random Forest Classifier": "rfc",
+        "XGBoost": "xgb",
+    };
 
-        option.classList.add("selected");
-        renderSelectedModel();
-        modelOptions.style.display = "none";
-      });
-    });
+    if (modelDropdown && trainBtn) {
+        let selectedModelFriendly = null;
+        let selectedModelBackend = null;
 
-    function renderHyperparameters(modelFriendly) {
-      let html = `<h4 class="param-heading">Hyperparameter Tuning</h4>`;
+        modelDropdown.addEventListener("click", function (e) {
+            if (e.target.classList.contains("option")) return;
+            if (!e.target.classList.contains("remove-model")) {
+                modelOptions.style.display =
+                    modelOptions.style.display === "block" ? "none" : "block";
+            }
+        });
 
-      switch (modelFriendly) {
-        case "Linear Regression":
-          html += `<p style="margin-left:15px;">No hyperparameters available.</p>`;
-          break;
-        case "Ridge Regression":
-        case "Lasso Regression":
-          html += `
-            <div class="param-block"><label>Alpha:</label><input type="number" id="param_alpha" value="1.0" step="0.1"></div>
-            <div class="param-block"><label>Max Iterations:</label><input type="number" id="param_max_iter" value="1000" step="10"></div>`;
-          break;
-        case "Decision Tree Regressor":
-          html += `
-            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
-            <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>
-            <div class="param-block"><label>Criterion:</label><select id="param_criterion"><option value="squared_error">squared_error</option><option value="friedman_mse">friedman_mse</option></select></div>`;
-          break;
-        case "Decision Tree Classifier":
-          html += `
-            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
-            <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>
-            <div class="param-block"><label>Criterion:</label><select id="param_criterion"><option value="gini">gini</option><option value="entropy">entropy</option></select></div>`;
-          break;
-        case "Random Forest Regressor":
-        case "Random Forest Classifier":
-          html += `
-            <div class="param-block"><label>Number of Trees:</label><input type="number" id="param_n_estimators" value="100" step="10"></div>
-            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
-            <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>`;
-          break;
-        case "XGBoost":
-          html += `
-            <div class="param-block"><label>Learning Rate:</label><input type="number" id="param_lr" value="0.1" step="0.01"></div>
-            <div class="param-block"><label>Number of Trees:</label><input type="number" id="param_n_estimators" value="100" step="10"></div>
-            <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="3" step="1"></div>`;
-          break;
-      }
+        function renderSelectedModel() {
+            selectedModelsDiv.innerHTML = "";
 
-      hyperparamsDiv.innerHTML = html;
-    }
+            if (selectedModelFriendly) {
+                const chip = document.createElement("span");
+                chip.classList.add("chip");
+                chip.textContent = selectedModelFriendly;
 
-    renderSelectedModel();
+                const removeBtn = document.createElement("span");
+                removeBtn.textContent = " ×";
+                removeBtn.classList.add("remove-model");
 
-    // ================= TRAIN BUTTON =================
-    trainBtn.addEventListener("click", function () {
-      if (!selectedModelBackend) { 
-        alert("Please select a model first!"); 
-        return; 
-      }
-      const targetCol = selectedTargetCol;
-      if (!targetCol) { 
-        alert("Please select a target column!"); 
-        return; 
-      }
+                removeBtn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    selectedModelFriendly = null;
+                    selectedModelBackend = null;
+                    modelOptions
+                        .querySelectorAll(".option")
+                        .forEach(opt => opt.classList.remove("selected"));
+                    renderSelectedModel();
+                });
 
-      const params = {};
-      hyperparamsDiv.querySelectorAll("input, select").forEach(el => {
-        let val;
-
-        if (el.tagName.toLowerCase() === "select") {
-          val = el.value || "gini";  
-        } else {
-          if (el.value !== "") {
-            if (["param_max_depth", "param_min_samples_split", "param_n_estimators"].includes(el.id)) {
-              val = parseInt(el.value);
-            } else if (el.step && el.step.includes(".")) {
-              val = parseFloat(el.value);
+                chip.appendChild(removeBtn);
+                selectedModelsDiv.appendChild(chip);
+                renderHyperparameters(selectedModelFriendly);
             } else {
-              val = parseInt(el.value);
+                selectedModelsDiv.textContent = "Select model...";
+                hyperparamsDiv.innerHTML = "<p>No model selected.</p>";
             }
-          } else {
-            if (el.id === "param_max_depth") val = 5;
-            else if (el.id === "param_min_samples_split") val = 2;
-            else val = null;
-          }
         }
-        params[el.id] = val;
-      });
 
-      // REPLACE THIS BLOCK
-// ✅ Mapping for tree-based models (DTC, RFC, RFR)
-      if (["dtc", "rfc", "rfr"].includes(selectedModelBackend)) {
-          const treeParamMapping = {
-              "param_max_depth": "max_depth",
-              "param_min_samples_split": "min_samples_split",
-              "param_criterion": "criterion",
-              "param_n_estimators": "n_estimators"
-          };
-          const mappedParams = {};
-          for (const key in params) {
-              if (treeParamMapping[key] !== undefined && params[key] !== undefined) {
-                  mappedParams[treeParamMapping[key]] = params[key];
-              }
-          }
-          Object.assign(params, mappedParams);
-      }
+        modelOptions.querySelectorAll(".option").forEach(option => {
+            option.addEventListener("click", function (e) {
+                selectedModelFriendly = option.getAttribute("data-value");
+                selectedModelBackend = modelMapping[selectedModelFriendly];
 
+                modelOptions
+                    .querySelectorAll(".option")
+                    .forEach(opt => opt.classList.remove("selected"));
 
-      const filePath = "{{ file_path|escapejs }}";
-      const testingStatus = document.getElementById("testing-status");
-      const maeCard = document.getElementById("mae-value");
-      const mseCard = document.getElementById("mse-value");
-      const r2Card = document.getElementById("r2-score");
-      const accuracyCard = document.getElementById("accuracy-score");
-      const classReportBody = document.getElementById("class-report-body");
-      const regMetrics = document.getElementById("reg-metrics");
-      const classMetrics = document.getElementById("class-metrics");
+                option.classList.add("selected");
+                renderSelectedModel();
+                modelOptions.style.display = "none";
+            });
+        });
 
-      function displayEvaluationResults(data) {
-    // Reset cards + table
-    maeCard.textContent = "--";
-    mseCard.textContent = "--";
-    r2Card.textContent = "--";
-    accuracyCard.textContent = "--";
-    classReportBody.innerHTML = "";
-    regMetrics.style.display = "none";
-    classMetrics.style.display = "none";
+        function renderHyperparameters(modelFriendly) {
+            let html = `<h4 class="param-heading">Hyperparameter Tuning</h4>`;
 
-    if (data.results) {
-        // Regression metrics
-        if (data.results.mae !== undefined) {
-            maeCard.textContent = data.results.mae.toFixed(2);
-            mseCard.textContent = data.results.mse.toFixed(2);
-            r2Card.textContent = data.results.r2.toFixed(2);
-            regMetrics.style.display = "flex";
-            testingStatus.classList.add("status-msg");
-            testingStatus.textContent = "Regression Evaluation Completed!";
-        } 
-        // Classification metrics
-        else if (data.results.accuracy !== undefined) {
-            accuracyCard.textContent = (data.results.accuracy * 100).toFixed(2) + "%";
-
-            const report = data.results.report || {};
-            classReportBody.innerHTML = "";
-
-            for (const key in report) {
-                const row = report[key];
-                if (!row || typeof row.precision !== "number") continue;
-
-                const precision = row.precision;
-                const recall = row.recall;
-                const f1 = row["f1-score"] !== undefined ? row["f1-score"] : (row.f1_score !== undefined ? row.f1_score : null);
-                const support = row.support !== undefined ? row.support : "";
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${key}</td>
-                    <td>${precision.toFixed(2)}</td>
-                    <td>${recall.toFixed(2)}</td>
-                    <td>${f1 !== null ? f1.toFixed(2) : "-"}</td>
-                    <td>${support}</td>
-                `;
-                classReportBody.appendChild(tr);
+            switch (modelFriendly) {
+                case "Linear Regression":
+                    html += `<p style="margin-left:15px;">No hyperparameters available.</p>`;
+                    break;
+                case "Ridge Regression":
+                case "Lasso Regression":
+                    html += `
+                        <div class="param-block"><label>Alpha:</label><input type="number" id="param_alpha" value="1.0" step="0.1"></div>
+                        <div class="param-block"><label>Max Iterations:</label><input type="number" id="param_max_iter" value="1000" step="10"></div>`;
+                    break;
+                case "Decision Tree Regressor":
+                    html += `
+                        <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
+                        <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>
+                        <div class="param-block"><label>Criterion:</label><select id="param_criterion"><option value="squared_error">squared_error</option><option value="friedman_mse">friedman_mse</option></select></div>`;
+                    break;
+                case "Decision Tree Classifier":
+                    html += `
+                        <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
+                        <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>
+                        <div class="param-block"><label>Criterion:</label><select id="param_criterion"><option value="gini">gini</option><option value="entropy">entropy</option></select></div>`;
+                    break;
+                case "Random Forest Regressor":
+                case "Random Forest Classifier":
+                    html += `
+                        <div class="param-block"><label>Number of Trees:</label><input type="number" id="param_n_estimators" value="100" step="10"></div>
+                        <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="5" step="1"></div>
+                        <div class="param-block"><label>Min Samples Split:</label><input type="number" id="param_min_samples_split" value="2" step="1"></div>`;
+                    break;
+                case "XGBoost":
+                    html += `
+                        <div class="param-block"><label>Learning Rate:</label><input type="number" id="param_lr" value="0.1" step="0.01"></div>
+                        <div class="param-block"><label>Number of Trees:</label><input type="number" id="param_n_estimators" value="100" step="10"></div>
+                        <div class="param-block"><label>Max Depth:</label><input type="number" id="param_max_depth" value="3" step="1"></div>`;
+                    break;
             }
 
-            classMetrics.style.display = "flex";
-            testingStatus.classList.add("status-msg");
-            testingStatus.textContent = "Classification Evaluation Completed!";
-        } 
+            hyperparamsDiv.innerHTML = html;
+        }
 
-        
+        renderSelectedModel();
+
+        // ================= TRAIN BUTTON =================
+        trainBtn.addEventListener("click", function () {
+            if (!selectedModelBackend) {
+                alert("Please select a model first!");
+                return;
+            }
+            const targetCol = selectedTargetCol;
+            if (!targetCol) {
+                alert("Please select a target column!");
+                return;
+            }
+
+            const params = {};
+            hyperparamsDiv.querySelectorAll("input, select").forEach(el => {
+                let val;
+                if (el.tagName.toLowerCase() === "select") {
+                    val = el.value || "gini";
+                } else {
+                    if (el.value !== "") {
+                        if (["param_max_depth", "param_min_samples_split", "param_n_estimators"].includes(el.id)) {
+                            val = parseInt(el.value);
+                        } else if (el.step && el.step.includes(".")) {
+                            val = parseFloat(el.value);
+                        } else {
+                            val = parseInt(el.value);
+                        }
+                    } else {
+                        if (el.id === "param_max_depth") val = 5;
+                        else if (el.id === "param_min_samples_split") val = 2;
+                        else val = null;
+                    }
+                }
+                params[el.id] = val;
+            });
+
+            // Mapping for tree-based models (DTC, RFC, RFR)
+            if (["dtc", "rfc", "rfr"].includes(selectedModelBackend)) {
+                const treeParamMapping = {
+                    "param_max_depth": "max_depth",
+                    "param_min_samples_split": "min_samples_split",
+                    "param_criterion": "criterion",
+                    "param_n_estimators": "n_estimators"
+                };
+                const mappedParams = {};
+                for (const key in params) {
+                    if (treeParamMapping[key] !== undefined && params[key] !== undefined) {
+                        mappedParams[treeParamMapping[key]] = params[key];
+                    }
+                }
+                Object.assign(params, mappedParams);
+            }
+
+            const filePath = "{{ file_path|escapejs }}";
+            const testingStatus = document.getElementById("testing-status");
+            const maeCard = document.getElementById("mae-value");
+            const mseCard = document.getElementById("mse-value");
+            const r2Card = document.getElementById("r2-score");
+            const accuracyCard = document.getElementById("accuracy-score");
+            const classReportBody = document.getElementById("class-report-body");
+            const regMetrics = document.getElementById("reg-metrics");
+            const classMetrics = document.getElementById("class-metrics");
+
+            function displayEvaluationResults(data) {
+                // Reset all cards and table
+                maeCard.textContent = "--";
+                mseCard.textContent = "--";
+                r2Card.textContent = "--";
+                accuracyCard.textContent = "--";
+                classReportBody.innerHTML = "";
+                regMetrics.style.display = "none";
+                classMetrics.style.display = "none";
+
+                if (data.results) {
+                    // Regression metrics
+                    if (data.results.mae !== undefined) {
+                        maeCard.textContent = data.results.mae.toFixed(2);
+                        mseCard.textContent = data.results.mse.toFixed(2);
+                        r2Card.textContent = data.results.r2.toFixed(2);
+                        regMetrics.style.display = "flex";
+                        testingStatus.classList.add("status-msg");
+                        testingStatus.textContent = "Regression Evaluation Completed!";
+                    }
+                    // Classification metrics
+                    else if (data.results.accuracy !== undefined) {
+                        accuracyCard.textContent = (data.results.accuracy * 100).toFixed(2) + "%";
+                        const report = data.results.report || {};
+                        classReportBody.innerHTML = "";
+                        for (const key in report) {
+                            const row = report[key];
+                            if (!row || typeof row.precision !== "number") continue;
+                            const precision = row.precision;
+                            const recall = row.recall;
+                            const f1 = row["f1-score"] !== undefined ? row["f1-score"] : (row.f1_score !== undefined ? row.f1_score : null);
+                            const support = row.support !== undefined ? row.support : "";
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                                <td>${key}</td>
+                                <td>${precision.toFixed(2)}</td>
+                                <td>${recall.toFixed(2)}</td>
+                                <td>${f1 !== null ? f1.toFixed(2) : "-"}</td>
+                                <td>${support}</td>`;
+                            classReportBody.appendChild(tr);
+                        }
+                        classMetrics.style.display = "flex";
+                        testingStatus.classList.add("status-msg");
+                        testingStatus.textContent = "Classification Evaluation Completed!";
+                    }
+                    
+                } else if (data.message) {
+                    testingStatus.textContent = data.message;
+                }
+            }
+
+            // Fetch training request
+            fetch("/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    action: "train",
+                    target: targetCol,
+                    model: selectedModelBackend,
+                    file_path: filePath,
+                    hyperparams: params
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    modelOutput.innerHTML = `<p style="color:#ffd700;">${data.message}</p>`;
+                    if (data.results) {
+                        displayEvaluationResults(data);
+                    } else {
+                        fetch("/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            body: JSON.stringify({
+                                action: "evaluate",
+                                file_path: filePath,
+                                model: selectedModelBackend,
+                                target_col: targetCol
+                            }),
+                        })
+                            .then(res => res.json())
+                            .then(evalData => displayEvaluationResults(evalData))
+                            .catch(err => {
+                                console.error(err);
+                                testingStatus.textContent = "Error during evaluation!";
+                            });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    modelOutput.innerHTML = `<p style="color:red;">Error training model.</p>`;
+                });
+        });
     }
 
-    // ✅ Separate block for messages
-    if (data.message) {
-        testingStatus.textContent = data.message;
-    }
-}
-
-
-// ================= TRAINING BUTTON =================
-trainModelBtn.addEventListener("click", function () {
-  const targetCol = targetColumnSelect.value;
-  const filePath = "{{ file_path|escapejs }}";
-  const params = {}; // collect hyperparams if needed
-
-  modelOutput.innerHTML = "<p style='color:cyan;'>Training model...</p>";
-
-  fetch("/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
-    body: JSON.stringify({
-      action: "train",
-      target: targetCol,
-      model: selectedModelBackend,
-      file_path: filePath,
-      hyperparams: params
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      modelOutput.innerHTML = `<p style="color:#ffd700;">${data.message}</p>`;
-      if (data.results) {
-        // if backend sends results with training itself
-        displayEvaluationResults(data);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      modelOutput.innerHTML = `<p style="color:red;">Error training model.</p>`;
-    });
+   
 });
-
-// ================= TESTING BUTTON =================
-testBtn.addEventListener("click", function () {
-  const filePath = "{{ file_path|escapejs }}";
-  const targetCol = targetColumnSelect.value;
-
-  testingStatus.textContent = "Evaluating model...";
-
-  fetch("/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
-    body: JSON.stringify({
-      action: "evaluate",   // ⬅️ here we call evaluate directly
-      file_path: filePath,
-      model: selectedModelBackend,
-      target_col: targetCol
-    }),
-  })
-    .then(res => res.json())
-    .then(evalData => {
-      displayEvaluationResults(evalData);
-      testingStatus.textContent = "Evaluation completed ✅";
-    })
-    .catch(err => {
-      console.error(err);
-      testingStatus.textContent = "Error during evaluation!";
-    });
-});
-
 </script>
 {% endblock %}

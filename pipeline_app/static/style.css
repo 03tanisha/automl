@@ -9,6 +9,8 @@ body {
     line-height: 1.6;      
 }
 
+
+
 /* Heading */
 .center-heading {
     text-align: center !important;
@@ -77,6 +79,9 @@ body {
 .tab-text {
     transition: color 0.3s, text-shadow 0.3s;
 }
+
+
+
 
 .tab-separator {
     border-bottom: 2px solid #444;  /* line color */
@@ -328,6 +333,7 @@ body {
     margin: 10px 0;
     display: inline-block;
 }
+
 
 
 .uploaded-file-name {

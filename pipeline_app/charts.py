@@ -22,13 +22,13 @@ def generate_charts(df, col):
     if pd.api.types.is_numeric_dtype(df[col]):
         # Histogram
         fig_hist = px.histogram(df, x=col, nbins=18, title=f"Histogram of {col}")
-        fig_hist.update_traces(marker_color="#599e94", hovertemplate="%{x}:%{y}")
+        fig_hist.update_traces(marker_color="#58508d", hovertemplate="%{x}:%{y}")
         fig_hist = apply_dark_theme(fig_hist, grid=True)
         group["charts"].append(fig_hist.to_html(full_html=False))
 
         # Boxplot
         fig_box = px.box(df, y=col, title=f"Boxplot of {col}")
-        fig_box.update_traces(marker_color="#08bdba", hovertemplate="%{y}")
+        fig_box.update_traces(marker_color="#bc5090", hovertemplate="%{y}")
         fig_box = apply_dark_theme(fig_box, grid=False)
         group["charts"].append(fig_box.to_html(full_html=False))
 
@@ -36,9 +36,12 @@ def generate_charts(df, col):
         # Bar chart
         top_values = df[col].value_counts().nlargest(5)
         fig_bar = px.bar(x=top_values.index, y=top_values.values, title=f"Top 5 values in {col}")
-        fig_bar.update_traces(marker_color="#599e94", hovertemplate="%{x}: %{y}")
+        fig_bar.update_traces(marker_color="#58508d", hovertemplate="%{x}: %{y}")
         fig_bar = apply_dark_theme(fig_bar, grid=True)
         group["charts"].append(fig_bar.to_html(full_html=False))
+
+
+
 
         # Pie chart
         fig_pie = px.pie(values=top_values.values, names=top_values.index, title=f"Pie chart of {col}")
