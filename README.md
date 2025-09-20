@@ -19,6 +19,6 @@ Data Processing: Pandas, NumPy
 
 Machine Learning: Scikit-learn
 
-Visualization: Matplotlib, Seaborn
+Visualization: Matplotlib, Seaborn, plotly
 
-Frontend: Django Templates with basic HTML/CSS/
+Frontend: Django Templates with basic HTML/CSS
